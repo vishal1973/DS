@@ -1,145 +1,175 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
 struct node
 {
-    int key;
+    int data;
     node *left;
     node *right;
 };
-struct node *root=NULL;
-class tree
+node *root=NULL;
+class visk
 {
-public:
-    node *createnode(int);
-    node *insert_node(node *,int);
-    int inorder(node *);
-    int printPostorder(node *);
-    int printPreorder(node *);
-    node *deleteNode(node *,int);
-    node *minValueNode(node *);
-};
-node *tree::minValueNode(node* node)
-{
-    struct node* current = node;
-    while (current->left != NULL)
-        current = current->left;
-    return current;
-}
- node *tree::deleteNode(node* root, int key)
-{
-    if (root == NULL)
-	return root;
-    if (key < root->key)
-        root->left = deleteNode(root->left, key);
-    else if (key > root->key)
-        root->right = deleteNode(root->right, key);
+ public:
+     int s=0;
+ void ins(int a,node *temp)
+ {
+    struct node *t=new node;
+    t->data=a;
+    t->left=NULL;
+    t->right=NULL;
+    if(root==NULL)
+    {
+        root=t;
+    }
+    else if(a<temp->data)
+    {
+        if(temp->left==NULL)
+        {
+            temp->left=t;
+        }
+        else
+        {
+            ins(a,temp->left);
+        }
+    }
     else
     {
-        if (root->left == NULL)
-        { node *temp = root->right;
-            delete(root);
-            return temp;
+        if(temp->right==NULL)
+        {
+            temp->right=t;
         }
-        else if (root->right == NULL)
-        { node *temp = root->left;
-            delete(root);
-            return temp;
+        else
+        {
+         ins(a,temp->right);
         }
-        struct node* temp = minValueNode(root->right);
-        root->key = temp->key;
-        root->right = deleteNode(root->right, temp->key);
     }
-    return root;
-}
-int tree::inorder(node *root)
-{
-    if(root==NULL)
+ }
+ int searchs(int a,node * temp)
+ {
+     if(temp!=NULL)
+     {
+          if(a==temp->data)
+        {
+            s=1;
+        }
+         searchs(a,temp->left);
+        searchs(a,temp->right);
+     }
+     else if(temp==NULL)
+     {
+         return s;
+     }
+ }
+ void maxs(node *temp)
+ {
+     while(temp->right!=NULL)
+     {
+         temp=temp->right;
+     }
+     cout<<"max="<<temp->data;
+ }
+ void mins(node *temp)
+ {
+     while(temp->left!=NULL)
+     {
+         temp=temp->left;
+     }
+    cout<<"min="<<temp->data;
+ }
+ int minhei(node *temp)
+ {
+     if(temp==NULL)
+       {
+           return 0;
+       }
+     else
+     {
+         int l=minhei(temp->left);
+         int r=minhei(temp->right);
+         if(l<r)
+            return (l+1);
+         else
+            return (r+1);
+     }
+ }
+ int maxhei(node *temp)
+ {
+     if(temp==NULL)
         return 0;
-    inorder(root->left);
-    cout<<root->key<<" ";
-    inorder(root->right);
-}
-node *tree::createnode(int x)
-{
-    node *temp=new node;
-    temp->key=x;
-    temp->left=NULL;
-    temp->right=NULL;
-
-}
-node *tree::insert_node(node *root,int data)
-{
-    int ele;
-    node *p;
-    if(root==NULL)
-    {root=createnode(data);
-        return root;
+     else
+     {
+     int l=maxhei(temp->left);
+     int r=maxhei(temp->right);
+     if(l>r)
+        return (l+1);
+     else
+        return (r+1);
+     }
+ }
+ void inorder(node *temp)
+ {
+     if(temp!=NULL)
+     {
+        inorder(temp->left);
+         cout<<temp->data<<" ";
+         inorder(temp->right);
+     }
+ }
+ void preorder(node *temp)
+ {
+     if(temp!=NULL)
+     {
+         cout<<temp->data<<" ";
+         preorder(temp->left);
+         preorder(temp->right);
+     }
+ }
+ void postorder(node *temp)
+ {
+    if(temp!=NULL)
+    {
+        postorder(temp->left);
+        postorder(temp->right);
+        cout<<temp->data<<" ";
     }
-    else if(data<=root->key)
-        root->left=insert_node(root->left,data);
-    else
-    {root->right=insert_node(root->right,data);
-    }
-}
-int tree::printPreorder(node *root)
-{
-    if (root == NULL)
-        return 0;
-    cout << root->key << " ";
-    printPreorder(root->left);
-    printPreorder(root->right);
-}
-int tree::printPostorder( node *root)
-{
-    if (root == NULL)
-        return 0;
-
-    printPostorder(root->left);
-
-    printPostorder(root->right);
-    cout << root->key << " ";
-}
+ }
+};
 int main()
 {
-    int e;
-    int n;
-    tree t;
-    node *p;
-    cout<<"1.Inserting an element"<<endl<<"2.Deleting an existing element"<<endl<<"3.Traversing the tree (a)inorder (b)preorder (c)postorder"<<endl;
-    cin>>n;
-	while(n!=4)
-	{
-		switch(n)
-		{
-			case 1:
-            cin>>e;
-            root=t.insert_node(root,e);
-            break;
-            case 2:
-            t.deleteNode(root,root->key);
-            break;
-            case 3:
-            	int b;
-            	cout<<"1.Inorder"<<endl<<"2.Preorder"<<endl<<"3.Postorder"<<endl;
-            	cin>>b;
-            	switch(b)
-            	{
-//            		cout<<"1.Inorder"<<endl<<"2.Preorder"<<endl<<"3.Postorder"<<endl;
-            		case 1:
-            		t.inorder(root);
-					cout<<endl;
-					break;
-					case 2:
-					t.printPreorder(root);
-					cout<<endl;
-					break;
-					case 3:
-					t.printPostorder(root);
-					cout<<endl;
-					break;
-				}
-		}cout<<"1.Inserting an element"<<endl<<"2.Deleting an existing element"<<endl<<"3.Traversing the tree (a)inorder (b)preorder (c)postorder"<<endl;
-		cin>>n;
-   }
-    return 0;
+ visk v;
+ int a,n,s,r;
+ cout<<"enter ";
+ cin>>n;
+ cout<<endl;
+ for(int i=0;i<n;i++)
+ {
+     cin>>a;
+     v.ins(a,root);  //if root is made in class then use ->v.root
+ }
+ cout<<"enter ele to be searched ";
+ cin>>s;
+ r=v.searchs(s,root);
+ if(r==1)
+ cout<<"\nfound\n";
+ else
+    cout<<"\nnot\n";
+
+ v.maxs(root);//maximum & minimum
+ cout<<endl;
+ v.mins(root);
+
+ cout<<"\n min height or min depth of tree (maybe wrong)";
+ int h=v.minhei(root);
+ cout<<h;
+
+ cout<<"\n max height or max depth of tree ";
+ h=v.maxhei(root);
+ cout<<h;
+
+ cout<<"\nin\n";
+ v.inorder(root);
+ cout<<"\npre\n";
+ v.preorder(root);
+ cout<<"\npost\n";
+ v.postorder(root);
 }
